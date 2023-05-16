@@ -6,6 +6,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Search from "./screens/Search";
 import { FontAwesome } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
+import Information from "./screens/Information";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -75,6 +77,21 @@ export default function App() {
           options={{
             tabBarIcon: ({ size, color }) => {
               return <FontAwesome name="search" size={size} color={color} />;
+            },
+          }}
+        />
+        <Tab.Screen
+          name="Information"
+          component={Information}
+          options={{
+            tabBarIcon: ({ size, color }) => {
+              return (
+                <MaterialCommunityIcons
+                  name="information-outline"
+                  size={size}
+                  color={color}
+                />
+              );
             },
           }}
         />
