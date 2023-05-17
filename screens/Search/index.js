@@ -1,6 +1,5 @@
 import {
   ActivityIndicator,
-  Button,
   FlatList,
   StyleSheet,
   Text,
@@ -8,9 +7,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import Card from "../../components/Card";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { AntDesign } from "@expo/vector-icons";
 
 const Search = ({ navigation }) => {
   const [data, setData] = useState([]);
@@ -20,6 +21,11 @@ const Search = ({ navigation }) => {
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
   const [counter, setCounter] = useState(0);
+  const [pickerStartDate, setPickerStartDate] = useState(new Date());
+  const [pickerEndDate, setPickerEndDate] = useState(new Date());
+  const [mode, setMode] = useState("date");
+  const [startedShow, setStartedShow] = useState(false);
+  const [endShow, setEndShow] = useState(false);
   const url = `https://api.orhanaydogdu.com.tr/deprem/kandilli/archive?limit=${limit}&date=${startDate}&date_end=${endDate}`;
   const dateRegex = new RegExp(/^\d{4}-\d{2}-\d{2}$/);
   const navigateDetail = (id) => {
@@ -67,6 +73,42 @@ const Search = ({ navigation }) => {
       setError(counter > 0 ? "Tarih formatı hatalı." : null);
     }
   };
+
+  // Datepicker
+  const startedDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setStartedShow(false);
+    const year = currentDate.getUTCFullYear();
+    const month = String(currentDate.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(currentDate.getUTCDate()).padStart(2, "0");
+    const convertedDate = `${year}-${month}-${day}`;
+    setPickerStartDate(currentDate);
+    setStartDate(convertedDate);
+  };
+  const endDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setEndShow(false);
+    const year = currentDate.getUTCFullYear();
+    const month = String(currentDate.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(currentDate.getUTCDate()).padStart(2, "0");
+    const convertedDate = `${year}-${month}-${day}`;
+    setPickerEndDate(currentDate);
+    setEndDate(convertedDate);
+  };
+
+  const showMode = (currentMode, date) => {
+    if (date === "startDate") {
+      setStartedShow(true);
+    } else {
+      setEndShow(true);
+    }
+    setMode(currentMode);
+  };
+
+  const showDatepicker = (date) => {
+    showMode("date", date);
+  };
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -75,25 +117,41 @@ const Search = ({ navigation }) => {
             <Text style={styles.title}>Deprem ara</Text>
             <View style={styles.form}>
               <Text style={styles.label}>Başlangıç Tarihi</Text>
-              <TextInput
-                style={styles.input}
-                value={startDate}
-                onChangeText={setStartDate}
-                placeholder="YYYY-MM-DD"
-                maxLength={10}
-                keyboardType="numeric"
-              />
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  value={startDate}
+                  onChangeText={setStartDate}
+                  placeholder="YYYY-MM-DD"
+                  maxLength={10}
+                  keyboardType="numeric"
+                />
+                <TouchableOpacity
+                  onPress={() => showDatepicker("startDate")}
+                  style={styles.datePickerButton}
+                >
+                  <AntDesign name="calendar" size={24} color="black" />
+                </TouchableOpacity>
+              </View>
             </View>
             <View style={styles.form}>
               <Text style={styles.label}>Bitiş Tarihi</Text>
-              <TextInput
-                style={styles.input}
-                onChangeText={setEndDate}
-                placeholder="YYYY-MM-DD"
-                value={endDate}
-                maxLength={10}
-                keyboardType="numeric"
-              />
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setEndDate}
+                  placeholder="YYYY-MM-DD"
+                  value={endDate}
+                  maxLength={10}
+                  keyboardType="numeric"
+                />
+                <TouchableOpacity
+                  onPress={() => showDatepicker("endDate")}
+                  style={styles.datePickerButton}
+                >
+                  <AntDesign name="calendar" size={24} color="black" />
+                </TouchableOpacity>
+              </View>
             </View>
 
             {error && <Text style={styles.error}>{error}</Text>}
@@ -112,6 +170,23 @@ const Search = ({ navigation }) => {
         onEndReachedThreshold={0.5}
         ListFooterComponent={loading && <ActivityIndicator />}
       />
+
+      {startedShow && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={pickerStartDate}
+          mode={mode}
+          onChange={startedDateChange}
+        />
+      )}
+      {endShow && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={pickerEndDate}
+          mode={mode}
+          onChange={endDateChange}
+        />
+      )}
     </View>
   );
 };
@@ -142,6 +217,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderColor: "#d4d4d8",
     borderRadius: 10,
+    width: "90%",
   },
   button: {
     alignItems: "center",
@@ -167,5 +243,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 10,
     opacity: 0.5,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
 });
