@@ -2,6 +2,9 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 
 const Card = ({ item, onPress }) => {
+  const dateParts = item.date.split(" ")[0].split(".");
+  const time = item.date.split(" ")[1];
+
   return (
     <TouchableOpacity
       style={[
@@ -18,7 +21,9 @@ const Card = ({ item, onPress }) => {
         <Text style={styles.title}>{item.title}</Text>
       </View>
       <View style={styles.rightContainer}>
-        <Text style={styles.date}>{item.date}</Text>
+        <Text style={styles.date}>
+          {dateParts[2]}.{dateParts[1]}.{dateParts[0]} {time}
+        </Text>
         <Text style={styles.mag}>Büyüklük: {item.mag}</Text>
       </View>
     </TouchableOpacity>
