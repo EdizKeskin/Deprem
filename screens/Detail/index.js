@@ -1,7 +1,7 @@
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import useFetch from "../../hooks/useFetch";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 const Detail = ({ route }) => {
   const { id } = route.params;
@@ -25,7 +25,6 @@ const Detail = ({ route }) => {
   }
 
   const item = data.result;
-  console.log(item);
 
   const coordinate = {
     latitude: item.geojson.coordinates[1],
@@ -67,6 +66,7 @@ const Detail = ({ route }) => {
       <View style={styles.bottomContainer}>
         <MapView
           style={styles.map}
+          provider={PROVIDER_GOOGLE}
           initialRegion={{
             latitude: item.geojson.coordinates[1],
             longitude: item.geojson.coordinates[0],
