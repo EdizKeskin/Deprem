@@ -4,8 +4,10 @@ export default function useFetch(url) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [trigger, setTrigger] = useState(false);
 
   async function fetchData() {
+    setLoading(true);
     try {
       const response = await fetch(url);
       const json = await response.json();
@@ -19,6 +21,6 @@ export default function useFetch(url) {
 
   useEffect(() => {
     fetchData();
-  }, [url]);
-  return { data, loading, error };
+  }, [url, trigger]);
+  return { data, loading, error, trigger, setTrigger };
 }

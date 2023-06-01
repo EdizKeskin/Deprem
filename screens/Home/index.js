@@ -1,27 +1,24 @@
 import {
   ActivityIndicator,
+  Button,
   FlatList,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import useFetch from "../../hooks/useFetch";
 import React, { useState } from "react";
 import Card from "../../components/Card";
 import { StatusBar } from "expo-status-bar";
+import { Feather } from "@expo/vector-icons";
+import Toast from "react-native-toast-message";
 
 const Home = ({ navigation }) => {
   const [limit, setLimit] = useState(20);
   const url = `https://api.orhanaydogdu.com.tr/deprem/kandilli/live?limit=${limit}`;
-  const { data, loading, error } = useFetch(url);
+  const { data, loading, error, setTrigger, trigger } = useFetch(url);
 
-  if (loading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
   if (error) {
     return (
       <View style={styles.center}>
@@ -42,21 +39,40 @@ const Home = ({ navigation }) => {
     <Card item={item} onPress={() => navigateDetail(item.earthquake_id)} />
   );
 
+  const refresh = () => {
+    setTrigger(!trigger);
+    Toast.show({
+      type: "success",
+      text2: "Veriler güncellendi",
+      visibilityTime: 2000,
+      autoHide: true,
+      marginTop: 40,
+    });
+  };
+
   return (
     <View style={styles.container}>
       <FlatList
         ListHeaderComponent={
           <View>
             <Text style={styles.title}>Son Depremler</Text>
+            <TouchableOpacity style={styles.refreshBtn} onPress={refresh}>
+              <Feather name="refresh-ccw" size={28} color="black" />
+            </TouchableOpacity>
           </View>
         }
         data={data.result}
         renderItem={renderItem}
         onEndReached={loadMoreData}
         onEndReachedThreshold={0.5}
-        ListFooterComponent={<ActivityIndicator size="large" />}
       />
+      {loading && (
+        <View style={styles.center}>
+          <ActivityIndicator size="large" />
+        </View>
+      )}
       <StatusBar style="auto" />
+      <Toast />
     </View>
   );
 };
@@ -78,5 +94,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    padding: 20,
+  },
+  refreshBtn: {
+    alignItems: "flex-end",
+    marginRight: 20,
+    marginBottom: 10,
   },
 });
