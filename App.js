@@ -8,8 +8,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import Information from "./screens/Information";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import Toast from "react-native-toast-message";
-
+import { RootSiblingParent } from "react-native-root-siblings";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -59,44 +58,46 @@ const SearchStack = () => {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={{ headerShown: false, tabBarShowLabel: false }}
-      >
-        <Tab.Screen
-          name="Home"
-          component={HomeStack}
-          options={{
-            tabBarIcon: ({ size, color }) => {
-              return <AntDesign name="home" size={size} color={color} />;
-            },
-          }}
-        />
-        <Tab.Screen
-          name="Search"
-          component={SearchStack}
-          options={{
-            tabBarIcon: ({ size, color }) => {
-              return <FontAwesome name="search" size={size} color={color} />;
-            },
-          }}
-        />
-        <Tab.Screen
-          name="Information"
-          component={Information}
-          options={{
-            tabBarIcon: ({ size, color }) => {
-              return (
-                <MaterialCommunityIcons
-                  name="information-outline"
-                  size={size}
-                  color={color}
-                />
-              );
-            },
-          }}
-        />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <RootSiblingParent>
+      <NavigationContainer>
+        <Tab.Navigator
+          screenOptions={{ headerShown: false, tabBarShowLabel: false }}
+        >
+          <Tab.Screen
+            name="Home"
+            component={HomeStack}
+            options={{
+              tabBarIcon: ({ size, color }) => {
+                return <AntDesign name="home" size={size} color={color} />;
+              },
+            }}
+          />
+          <Tab.Screen
+            name="Search"
+            component={SearchStack}
+            options={{
+              tabBarIcon: ({ size, color }) => {
+                return <FontAwesome name="search" size={size} color={color} />;
+              },
+            }}
+          />
+          <Tab.Screen
+            name="Information"
+            component={Information}
+            options={{
+              tabBarIcon: ({ size, color }) => {
+                return (
+                  <MaterialCommunityIcons
+                    name="information-outline"
+                    size={size}
+                    color={color}
+                  />
+                );
+              },
+            }}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </RootSiblingParent>
   );
 }

@@ -12,7 +12,7 @@ import React, { useState } from "react";
 import Card from "../../components/Card";
 import { StatusBar } from "expo-status-bar";
 import { Feather } from "@expo/vector-icons";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-root-toast";
 
 const Home = ({ navigation }) => {
   const [limit, setLimit] = useState(20);
@@ -41,12 +41,13 @@ const Home = ({ navigation }) => {
 
   const refresh = () => {
     setTrigger(!trigger);
-    Toast.show({
-      type: "success",
-      text2: "Veriler güncellendi",
-      visibilityTime: 2000,
-      autoHide: true,
-      marginTop: 40,
+    Toast.show("Veriler güncellendi", {
+      duration: Toast.durations.LONG,
+      position: Toast.positions.BOTTOM,
+      shadow: true,
+      animation: true,
+      hideOnPress: true,
+      delay: 0,
     });
   };
 
